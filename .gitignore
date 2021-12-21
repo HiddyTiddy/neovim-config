@@ -4,3 +4,4 @@ plugin/
 .DS_store
 coc-settings.json
 init.vim.old
+lua/hyde/vars.lua
