@@ -60,6 +60,13 @@ function _DENO_TOGGLE()
 end
 
 
+local lua_term = Terminal:new({ cmd = "lua", hidden = true })
+
+function _LUA_TOGGLE()
+	lua_term:toggle()
+end
+
+
 local ncdu = Terminal:new({ cmd = "ncdu", hidden = true })
 
 function _NCDU_TOGGLE()

@@ -132,7 +132,7 @@ local mappings = {
     name = "LSP",
     a = { "<cmd>lua vim.lsp.buf.code_action()<cr>", "Code Action" },
     d = {
-      "<cmd>Telescope lsp_document_diagnostics<cr>",
+      "<cmd>Telescope <cr>",
       "Document Diagnostics",
     },
     w = {
@@ -174,7 +174,8 @@ local mappings = {
   t = {
     name = "Terminal",
     n = { "<cmd>lua _NODE_TOGGLE()<cr>", "Node" },
-    d = { "<cmd>lua _DENO_TOGGLE()<cr>", "Node" },
+    d = { "<cmd>lua _DENO_TOGGLE()<cr>", "Deno" },
+    l = { "<cmd>lua _LUA_TOGGLE()<cr>", "Deno" },
     u = { "<cmd>lua _NCDU_TOGGLE()<cr>", "NCDU" },
     t = { "<cmd>lua _YTOP_TOGGLE()<cr>", "Ytop" },
     p = { "<cmd>lua _PYTHON_TOGGLE()<cr>", "Python" },
