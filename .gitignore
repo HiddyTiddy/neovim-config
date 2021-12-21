@@ -1,0 +1,6 @@
+autoload/
+plugged/
+plugin/
+.DS_store
+coc-settings.json
+init.vim.old
