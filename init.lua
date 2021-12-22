@@ -26,12 +26,12 @@ require("hyde.autopairs")
 vim.cmd(
 [[
 syntax on
-language en_US
 filetype indent on
 ]])
 
 vim.cmd([[
 autocmd Filetype tex setl updatetime=1
 let g:livepreview_previewer = 'open -a Preview'
+
 ]])
 
