@@ -52,4 +52,6 @@ nvim_lspconfig.groovyls.setup({
 nvim_lspconfig.clangd.setup{}
 
 -- node / deno
-nvim_lspconfig.denols.setup{}
+-- nvim_lspconfig.denols.setup{}
+nvim_lspconfig.tsserver.setup{}
+
