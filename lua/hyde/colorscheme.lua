@@ -1,1 +1,3 @@
-vim.cmd [[ colorscheme nord ]]
+
+
+vim.cmd [[ silent! colorscheme nord ]]
