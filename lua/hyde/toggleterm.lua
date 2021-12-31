@@ -92,7 +92,7 @@ if exists("lua --version") then
 	end
 else
 	function _LUA_TOGGLE()
-        print("lua not installed")
+		print("lua not installed")
 	end
 end
 
@@ -104,7 +104,7 @@ if exists("ncdu --version") then
 	end
 else
 	function _NCDU_TOGGLE()
-        print("ncdu not installed")
+		print("ncdu not installed")
 	end
 end
 
@@ -116,7 +116,7 @@ if exists("ytop --version") then
 	end
 else
 	function _YTOP_TOGGLE()
-        print("ytop not installed")
+		print("ytop not installed")
 	end
 end
 
@@ -128,6 +128,6 @@ if exists("python3 --version") then
 	end
 else
 	function _PYTHON_TOGGLE()
-        print("python3 not installed")
+		print("python3 not installed")
 	end
 end
