@@ -12,5 +12,10 @@ vim.cmd [[
     autocmd BufEnter,BufWinEnter *.dot :set makeprg=dot\ -Tsvg\ %\ -o\ %<.svg
 ]]
 vim.cmd([[
-:autocmd BufEnter *.png,*.jpg,*gif exec "! imgcat ".expand("%") | :bw
+    autocmd BufEnter *.png,*.jpg,*gif exec "! imgcat ".expand("%") | :bw
+]])
+
+vim.cmd([[
+    au Filetype markdown nnoremap <buffer> <leader>ps :PresentingStart<CR>
+    au Filetype markdown nnoremap <buffer> <F12> :.!toilet -w 200 -f term -F border<CR>
 ]])

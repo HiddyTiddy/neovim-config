@@ -95,12 +95,7 @@ return packer.startup(function(use)
 
 	-- notes stuff
 	use("sotte/presenting.vim")
-	use({
-		"nvim-orgmode/orgmode",
-		config = function()
-			require("orgmode").setup({})
-		end,
-	})
+	use( "nvim-orgmode/orgmode")
 
 	if PACKER_BOOTSTRAP then
 		require("packer").sync()
