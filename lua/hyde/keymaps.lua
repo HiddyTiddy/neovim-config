@@ -11,7 +11,7 @@ vim.api.nvim_set_keymap("v", "<leader>y", '"+y', { noremap = true })
 
 vim.api.nvim_set_keymap("n", "<leader>tn", ":tabnew<CR>:NvimTreeOpen<CR>", { noremap = false })
 vim.api.nvim_set_keymap("n", "<leader>mt", ":MinimapToggle<CR>", { noremap = true })
-vim.api.nvim_set_keymap("n", "<leader>rf", ":RustFmt<CR>", { noremap = true })
+vim.api.nvim_set_keymap("n", "<leader>.", "lua vim.lsp.buf.code_action()<cr>", { noremap = true })
 
 vim.api.nvim_set_keymap("n", "<leader>h", ":wincmd h<CR>", { noremap = false })
 vim.api.nvim_set_keymap("n", "<leader>j", ":wincmd j<CR>", { noremap = true })
