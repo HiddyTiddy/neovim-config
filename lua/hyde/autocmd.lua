@@ -6,6 +6,11 @@
 
 -- vim.cmd [[ autocmd CursorMoved,InsertLeave,BufEnter,BufWinEnter,TabEnter,BufWritePost *.rs :lua require'lsp_extensions'.inlay_hints{ prefix = '=>', highlight = "Comment", enabled = {"TypeHint", "ChainingHint", "ParameterHint"} } ]]
 
--- vim.cmd [[
 -- autocmd BufEnter,BufWinEnter *.rs :RustSetInlayHints
--- ]]
+vim.cmd [[
+    autocmd BufEnter,BufWinEnter *.rs :set makeprg=cargo
+    autocmd BufEnter,BufWinEnter *.dot :set makeprg=dot\ -Tsvg\ %\ -o\ %<.svg
+]]
+vim.cmd([[
+:autocmd BufEnter *.png,*.jpg,*gif exec "! imgcat ".expand("%") | :bw
+]])
