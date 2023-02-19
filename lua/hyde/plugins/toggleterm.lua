@@ -84,7 +84,7 @@ else
 	end
 end
 
-if exists("lua --version") then
+if exists("lua -v") then
 	local lua_term = Terminal:new({ cmd = "lua", hidden = true })
 
 	function _LUA_TOGGLE()
