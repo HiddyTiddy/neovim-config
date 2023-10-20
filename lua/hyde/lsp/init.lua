@@ -1,8 +1,49 @@
-local status_ok, nvim_lspconfig = pcall(require, "lspconfig")
+local status_ok, neodev = pcall(require, "neodev")
+if not status_ok then
+    print("failed to require neodev")
+    return
+end
+local nlspsettings
+status_ok, nlspsettings = pcall(require, "nlspsettings")
+if not status_ok then
+    print("failed to require nlspsettings")
+    return
+end
+-- local lsp_installer
+-- status_ok, lsp_installer = pcall(require, "nvim-lsp-installer")
+-- if not status_ok then
+--     print("failed to require lsp_installer")
+--     return
+-- end
+
+neodev.setup({
+    -- add any options here, or leave empty to use the default settings
+})
+
+local nvim_lspconfig
+status_ok, nvim_lspconfig = pcall(require, "lspconfig")
 local handlers = require("hyde.lsp.handlers")
 if not status_ok then
     return
 end
+
+nlspsettings.setup({
+    config_home = vim.fn.stdpath("config") .. "/nlsp-settings",
+    local_settings_dir = ".nlsp-settings",
+    local_settings_root_markers_fallback = { ".git" },
+    append_default_schemas = true,
+    loader = "json",
+    ignored_servers = {},
+    open_strictly = false,
+    nvim_notify = { enable = false, timeout = 5000 },
+})
+
+local global_capabilities = vim.lsp.protocol.make_client_capabilities()
+global_capabilities.textDocument.completion.completionItem.snippetSupport = true
+
+nvim_lspconfig.util.default_config = vim.tbl_extend("force", nvim_lspconfig.util.default_config, {
+    capabilities = global_capabilities,
+})
 
 vim.diagnostic.config({
     virtual_text = true,
@@ -11,7 +52,7 @@ vim.diagnostic.config({
 })
 
 require("hyde.lsp.lsp-installer")
-require("hyde.lsp.handlers").setup()
+handlers.setup()
 require("hyde.lsp.null-ls")
 
 -- https://github.com/neovim/nvim-lspconfig/blob/master/doc/server_configurations.md
@@ -24,7 +65,12 @@ require("hyde.lsp.rust")
 require("hyde.lsp.haskell")
 
 -- Python
-nvim_lspconfig.pyright.setup({})
+-- nvim_lspconfig.pyright.setup({})
+nvim_lspconfig.anakin_language_server.setup({
+    anakinls = {
+        mypy_enabled = true,
+    },
+})
 
 -- Java
 nvim_lspconfig.groovyls.setup({
@@ -35,7 +81,7 @@ nvim_lspconfig.groovyls.setup({
 require("hyde.lsp.clangd")
 
 -- node / deno
-require("hyde.lsp.typescript")
+-- require("hyde.lsp.typescript")
 
 -- html
 local capabilities = vim.lsp.protocol.make_client_capabilities()
@@ -56,6 +102,36 @@ nvim_lspconfig.asm_lsp.setup({
 --[[ 	root_dir = nvim_lspconfig.util.root_pattern(".sqllsrc.json"), ]]
 --[[ }) ]]
 -- nvim_lspconfig.sqlls.setup({})
+
+-- nvim_lspconfig.sqls.setup({
+--     on_attach = function(client, bufnr)
+--         -- client.server_capabilities.document_formatting = false
+--         -- client.server_capabilities.document_range_formatting = false
+--         client.server_capabilities.documentFormattingProvider = false
+--         client.server_capabilities.documentRangeFormattingProvider = false
+--         require("sqls").on_attach(client, bufnr)
+--     end,
+--     cmd = { "/Users/hasenmafia/opt/sqls/sqls" },
+--     settings = {
+--         sqls = {
+--             connections = {
+--                 {
+--                     driver = "postgresql",
+--                     dataSourceName = "postgres://postgres@127.0.0.1:5432/employee?sslmode=disable",
+--                 },
+--                 {
+--                     driver = "postgresql",
+--                     dataSourceName = "postgres://postgres@127.0.0.1:5432/zvv?sslmode=disable",
+--                 },
+--
+--                 {
+--                     driver = "postgresql",
+--                     dataSourceName = "postgres://postgres@127.0.0.1:5432/tpch?sslmode=disable",
+--                 },
+--             },
+--         },
+--     },
+-- })
 
 -- nvim_lspconfig.sqlls.setup({
 --   cmd = { "/Users/hasenmafia/go/bin/sqls" },
@@ -104,24 +180,48 @@ if not require("lspconfig.configs").hdl_checker then
     }
 end
 
-nvim_lspconfig.hdl_checker.setup({})
+-- list of enabled servers without custom config
+-- TODO: make custom configs have a place to live here
+local enabled_servers = {
+    "hdl_checker",
+    "jdtls",
+    "texlab",
+    "jsonls",
+    "taplo",
+    "zls",
+    "emmet_ls",
+    "svelte",
+    "tailwindcss",
+    "bashls",
+    "julials"
+}
+
+require("hyde.lsp.ocaml")
 
 nvim_lspconfig.cssls.setup({
     capabilities = capabilities,
 })
 
-nvim_lspconfig.jdtls.setup({})
-
 nvim_lspconfig.lua_ls.setup(require("hyde.lsp.settings.lua_ls"))
 
-nvim_lspconfig.texlab.setup({})
 --[[ nvim_lspconfig.ltex.setup({}) ]]
 nvim_lspconfig.gopls.setup({
     on_attach = function(client, bufnr)
         handlers.on_attach(client, bufnr)
     end,
+    settings = {
+        gopls = {
+            completeUnimported = true,
+            usePlaceholders = true,
+            analyses = {
+                unusedparams = true
+            }
+        }
+    },
 })
 
-nvim_lspconfig.jsonls.setup({})
+nvim_lspconfig.jsonls.setup(require("hyde.lsp.settings.jsonls"))
 
-nvim_lspconfig.graphql.setup({})
+for _, server in ipairs(enabled_servers) do
+    nvim_lspconfig[server].setup({ on_attach = handlers.on_attach })
+end

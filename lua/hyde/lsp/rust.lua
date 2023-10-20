@@ -1,3 +1,7 @@
+local lldb_ext_path = vim.env.HOME .. "/.vscode/extensions/vadimcn.vscode-lldb-1.8.1/"
+local codelldb_path = lldb_ext_path .. "adapter/codelldb"
+local liblldb_path = lldb_ext_path .. "lldb/lib/liblldb.dylib"
+
 local opts = {
     tools = {
         autoSetHints = true,
@@ -34,9 +38,10 @@ local opts = {
             -- https://rust-analyzer.github.io/manual.html
             ["rust-analyzer"] = {
                 -- enable clippy on save
-                checkOnSave = {
-                    command = "clippy",
-                },
+                check = { command = "clippy" },
+                -- checkOnSave = {
+                --     command = "clippy",
+                -- },
                 completion = {
                     callable = {
                         snippets = "fill_arguments",
@@ -45,5 +50,9 @@ local opts = {
             },
         },
     },
+    dap = {
+        adapter = require("rust-tools.dap").get_codelldb_adapter(codelldb_path, liblldb_path),
+    },
 }
+
 require("rust-tools").setup(opts)

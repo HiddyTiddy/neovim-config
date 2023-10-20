@@ -1,11 +1,16 @@
 local M = {}
 
+local icons = require("hyde.tools.icons")
+local configs0 = require("hyde.lsp.configs")
+local set_config = configs0.set_config
+local configs = configs0.configs
+
 M.setup = function()
     local signs = {
-        { name = "DiagnosticSignError", text = "" },
-        { name = "DiagnosticSignWarn", text = "" },
-        { name = "DiagnosticSignHint", text = "" },
-        { name = "DiagnosticSignInfo", text = "" },
+        { name = "DiagnosticSignError", text = icons.error },
+        { name = "DiagnosticSignWarn",  text = icons.warningTriangle },
+        { name = "DiagnosticSignHint",  text = icons.info },
+        { name = "DiagnosticSignInfo",  text = icons.questionCircle },
     }
     for _, sign in ipairs(signs) do
         vim.fn.sign_define(sign.name, { texthl = sign.name, text = sign.text, numhl = "" })
@@ -36,11 +41,20 @@ M.setup = function()
         border = "rounded",
     })
 
-    -- vim.cmd([[autocmd CursorHold,CursorHoldI * lua vim.diagnostic.open_float(nil, {focus=false})]]) 
+    -- vim.cmd([[autocmd CursorHold,CursorHoldI * lua vim.diagnostic.open_float(nil, {focus=false})]])
 
     vim.lsp.handlers["textDocument/signatureHelp"] = vim.lsp.with(vim.lsp.handlers.signature_help, {
         border = "rounded",
     })
+
+    local capabilities = vim.lsp.protocol.make_client_capabilities()
+
+    local status_ok, cmp_nvim_lsp = pcall(require, "cmp_nvim_lsp")
+    if not status_ok then
+        return
+    end
+
+    M.capabilities = cmp_nvim_lsp.default_capabilities(capabilities)
 end
 
 local function lsp_highlight_document(client)
@@ -52,7 +66,7 @@ local function lsp_highlight_document(client)
             autocmd CursorHold <buffer> lua vim.lsp.buf.document_highlight()
             autocmd CursorMoved <buffer> lua vim.lsp.buf.clear_references()
           augroup END
-        ]]   ,
+        ]],
             false
         )
     end
@@ -64,7 +78,7 @@ local function lsp_keymaps(bufnr)
     vim.api.nvim_buf_set_keymap(bufnr, "n", "gd", "<cmd>lua vim.lsp.buf.definition()<CR>", opts)
     vim.api.nvim_buf_set_keymap(bufnr, "n", "K", "<cmd>lua vim.lsp.buf.hover()<CR>", opts)
     vim.api.nvim_buf_set_keymap(bufnr, "n", "gi", "<cmd>lua vim.lsp.buf.implementation()<CR>", opts)
-    vim.api.nvim_buf_set_keymap(bufnr, "n", "<C-k>", "<cmd>lua vim.lsp.buf.signature_help()<CR>", opts)
+    vim.api.nvim_buf_set_keymap(bufnr, "n", "<C-?>", "<cmd>lua vim.lsp.buf.signature_help()<CR>", opts)
     -- vim.api.nvim_buf_set_keymap(bufnr, "n", "<leader>rn", "<cmd>lua vim.lsp.buf.rename()<CR>", opts)
     vim.api.nvim_buf_set_keymap(bufnr, "n", "gr", "<cmd>lua vim.lsp.buf.references()<CR>", opts)
     -- vim.api.nvim_buf_set_keymap(bufnr, "n", "<leader>ca", "<cmd>lua vim.lsp.buf.code_action()<CR>", opts)
@@ -96,7 +110,7 @@ M.go_org_imports = function(wait_ms)
     end
 end
 
-M.on_attach = function(client, buffno)
+M.on_attach = function(client, bufnr)
     if client.name == "tsserver" then
         client.server_capabilities.document_formatting = false
     end
@@ -113,17 +127,44 @@ M.on_attach = function(client, buffno)
         ]])
     end
 
-    lsp_keymaps(buffno)
+    local client_config = configs[client.name]
+    set_config(client_config)
+
+    if client.name == "ocamllsp" then
+        require("which-key").register({
+            l = {
+                u = {
+                    t = {
+                        require("ocaml.actions").update_interface_type,
+                        "Ocaml Update Type",
+                    },
+                },
+            },
+        }, {
+            mode = "n",
+            prefix = "<leader>",
+            buf = bufnr,
+            silent = true,  -- use `silent` when creating keymaps
+            noremap = true, -- use `noremap` when creating keymaps
+            nowait = true,  -- use `nowait` when creating keymaps
+        })
+    end
+
+    if client.resolved_capabilities and client.resolved_capabilities.code_lens then
+        local codelens = vim.api.nvim_create_augroup("LSPCodeLens", { clear = true })
+        vim.api.nvim_create_autocmd({ "BufEnter", "InsertLeave", "CursorHold" }, {
+            group = codelens,
+            callback = function()
+                vim.lsp.codelens.refresh()
+            end,
+            buffer = bufnr,
+        })
+    end
+
+    lsp_keymaps(bufnr)
     lsp_highlight_document(client)
 end
 
-local capabilities = vim.lsp.protocol.make_client_capabilities()
-
-local status_ok, cmp_nvim_lsp = pcall(require, "cmp_nvim_lsp")
-if not status_ok then
-    return
-end
-
-M.capabilities = cmp_nvim_lsp.default_capabilities(capabilities)
+M.capabilities = nil
 
 return M
