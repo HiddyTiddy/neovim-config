@@ -8,11 +8,8 @@ require("hyde.lsp")
 require("hyde.autocmd")
 require("hyde.latex")
 require("hyde.hydra")
-require("hyde.colorscheme")
 require("hyde.various.heckify")
-if vim.g.neovide ~= nil then
-    require("hyde.neovide")
-end
+require("hyde.neovide")
 
 require("hyde.migrate-move").setup({
     program = "migrate-move",
@@ -21,9 +18,18 @@ require("hyde.migrate-move").setup({
     dir_path = "migrations",
 })
 
-require("hyde.various.markdown").setup()
+require("hyde.various.markdown").setup({
+    options = {
+        shiftwidth = 2,
+        iskeyword = { "@", "48-57", "192-255" },
+    },
+})
+require("hyde.various.oat")
 require("hyde.various.make")
+require("hyde.various.autorun")
 require("hyde.various.open").setup()
+require("hyde.various.confirm-quit").setup()
+require("hyde.various.oc-generate-mli").setup()
 
 require("hyde.rust-plugins")
 
@@ -46,6 +52,8 @@ augroup vimtex_common
     autocmd FileType tex lua require("hyde.latex").write_serverfile()
 augroup END
 ]])
+
+vim.api.nvim_command([[syn match Todo " "]])
 
 local time = os.date("*t")
 STARTUPTIME = string.format("%d-%d-%d %d:%d:%d", time.year, time.month, time.day, time.hour, time.min, time.sec)
