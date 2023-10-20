@@ -14,7 +14,11 @@
 (((template_string) @_template_string
  (#match? @_template_string "^`\\<")) @html)
 
-
+(pair
+  key: (property_identifier) @_name
+    (#eq? @_name "template")
+  value: (template_string) @html
+)
 
 
 ;
