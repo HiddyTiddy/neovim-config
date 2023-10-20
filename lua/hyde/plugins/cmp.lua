@@ -17,31 +17,31 @@ local check_backspace = function()
 end
 
 local kind_icons = {
-    Text = "",
+    Text = "󰉿",
     Method = "m",
-    Function = "",
+    Function = "󰊕",
     Constructor = "",
     Field = "",
-    Variable = "",
-    Class = "",
+    Variable = "󰆧",
+    Class = "󰌗",
     Interface = "",
     Module = "",
     Property = "",
     Unit = "",
-    Value = "",
+    Value = "󰎠",
     Enum = "",
-    Keyword = "",
+    Keyword = "󰌋",
     Snippet = "",
-    Color = "",
-    File = "",
+    Color = "󰏘",
+    File = "󰈙",
     Reference = "",
-    Folder = "",
+    Folder = "󰉋",
     EnumMember = "",
-    Constant = "",
+    Constant = "󰇽",
     Struct = "",
     Event = "",
-    Operator = "",
-    TypeParameter = "",
+    Operator = "󰆕",
+    TypeParameter = "󰊄",
 }
 -- https://www.nerdfonts.com/cheat-sheet
 
@@ -56,8 +56,8 @@ cmp.setup({
     mapping = {
         ["<C-k>"] = cmp.mapping.select_prev_item(behavior),
         ["<C-j>"] = cmp.mapping.select_next_item(behavior),
-        ["<C-b>"] = cmp.mapping(cmp.mapping.scroll_docs(-1), { "i", "c" }),
-        ["<C-f>"] = cmp.mapping(cmp.mapping.scroll_docs(1), { "i", "c" }),
+        ["<C-b>"] = cmp.mapping(cmp.mapping.scroll_docs(-1), { "i", "c", "n" }),
+        ["<C-f>"] = cmp.mapping(cmp.mapping.scroll_docs(1), { "i", "c", "n" }),
         ["<C-Space>"] = cmp.mapping(cmp.mapping.complete(), { "i", "c" }),
         ["<C-y>"] = cmp.config.disable,
         ["<C-e>"] = cmp.mapping({
@@ -66,7 +66,6 @@ cmp.setup({
         }),
         ["<Down>"] = cmp.mapping.select_next_item(behavior),
         ["<Up>"] = cmp.mapping.select_prev_item(behavior),
-
         -- ["<CR>"] = cmp.mapping.confirm({ select = true }),
         ["<CR>"] = cmp.mapping.confirm({ select = false }),
         ["<Tab>"] = cmp.mapping(function(fallback)
@@ -94,7 +93,6 @@ cmp.setup({
             --[[ else ]]
             --[[ 	fallback() ]]
             --[[ end ]]
-
             if cmp.visible() then
                 cmp.select_prev_item(behavior)
                 --[[ elseif luasnip.expandable() then ]]
@@ -144,6 +142,14 @@ cmp.setup({
         { name = "path" },
         { name = "orgmode" },
         { name = "crates" },
+        {
+            name = "spell",
+            option = {
+                enable_in_context = function()
+                    return require("cmp.config.context").in_treesitter_capture("spell")
+                end,
+            },
+        },
     },
     confirm_opts = {
         behavior = cmp.ConfirmBehavior.Replace,
@@ -158,7 +164,7 @@ cmp.setup({
     --     entries = "native"
     -- },
     experimental = {
-        ghost_text = true,
+        ghost_text = {hl_group = "Comment"},
     },
 })
 
@@ -184,6 +190,7 @@ cmp.setup.cmdline(":", {
 -- luasnip.config.setup({ history = false, region_check_events = "InsertEnter", delete_check_events = "InsertLeave" })
 luasnip.config.set_config({
     history = true,
+    enable_autosnippets = true,
     region_check_events = "InsertEnter",
     delete_check_events = "TextChanged",
 })

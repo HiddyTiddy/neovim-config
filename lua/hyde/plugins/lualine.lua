@@ -60,13 +60,27 @@ local location = {
 
 -- cool function for progress
 local progress = function()
-    local current_line = vim.fn.line(".")
-    local total_lines = vim.fn.line("$")
-    local chars = { "__", "▁▁", "▂▂", "▃▃", "▄▄", "▅▅", "▆▆", "▇▇", "██" }
-    -- local chars = { "◜ ", " ◝", " ◞", "◟ "}
-    local line_ratio = current_line / total_lines
-    local index = math.ceil(line_ratio * #chars)
-    return chars[index]
+    local buftype = vim.o.ft
+    if buftype == "tex" then
+        -- if wordcount == nil then
+        --     wordcount = require("hyde.various.cache").single(function()
+        --         -- still too slow unfortunately
+        --         return tostring(vim.fn.system("detex " .. vim.fn.expand("%") .. " | wc -w") + 0)
+        --     end)
+        -- end
+        --
+        -- local out= wordcount:get()
+        -- return out
+        return tostring(vim.fn.wordcount().words)
+    else
+        local current_line = vim.fn.line(".")
+        local total_lines = vim.fn.line("$")
+        local chars = { "__", "▁▁", "▂▂", "▃▃", "▄▄", "▅▅", "▆▆", "▇▇", "██" }
+        -- local chars = { "◜ ", " ◝", " ◞", "◟ "}
+        local line_ratio = current_line / total_lines
+        local index = math.ceil(line_ratio * #chars)
+        return chars[index]
+    end
 end
 
 -- local spaces = function()
@@ -112,6 +126,7 @@ lualine.setup({
         lualine_y = { location },
         lualine_z = { progress },
     }),
+
     inactive_sections = {
         lualine_a = {},
         lualine_b = {},

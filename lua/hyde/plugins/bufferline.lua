@@ -3,7 +3,6 @@
 --[[     print("error with bufferline") ]]
 --[[     return ]]
 --[[ end ]]
-
 --[[ bufferline.setup({ ]]
 --[[     clickable = true, ]]
 --[[     animation = true, ]]
@@ -15,7 +14,6 @@
 --[[     }, ]]
 --[[ }) ]]
 --[[ bufferline.setup() ]]
-
 local map = vim.api.nvim_set_keymap
 local opts = { noremap = true, silent = false }
 vim.cmd("set mousemoveevent")
@@ -31,20 +29,12 @@ local groups = {
     },
     items = {
         {
-            name = "Tests",
-            highlight = { underline = true, sp = "blue" },
-            priority = 2,
-            icon = "",
-            matcher = function(buf)
-                return buf.filename:match("%_test")
-            end,
-        },
-        {
             name = "Docs",
             highlight = { undercurl = false, sp = "green" },
             auto_close = false,
-            matcher = function(buf)
-                return buf.filename:match("%.md") or buf.filename:match("%.txt")
+            custom_filter = function(buf_number)
+                local ft = vim.bo[buf_number].filetype
+                return ft == "markdown" or ft == "md" or ft == "txt"
             end,
             --[[ separator = { ]]
             --[[     style = require("bufferline.groups").separator.tab, ]]
@@ -54,7 +44,8 @@ local groups = {
 }
 
 require("bufferline").setup({
-    options = { -- NVIm built-in LSP
+    options = {
+                -- NVIm built-in LSP
         diagnostics = "nvim_lsp",
         offsets = {
             {
@@ -69,19 +60,17 @@ require("bufferline").setup({
             style = "icon",
         },
         diagnostics_indicator = function(
-   count,
-   level -- , diagnostics_dict, context
+            count,
+            level -- , diagnostics_dict, context
         )
             local icon = level:match("error") and "" or ""
             return " (" .. icon .. count .. ")"
         end,
-
         hover = {
             enabled = true,
             delay = 20,
             reveal = { "close" },
         },
-
         separator_style = "thick",
         groups = groups,
     },
@@ -105,7 +94,7 @@ return
 --[[             icon = "▎", ]]
 --[[             style = "icon", ]]
 --[[         }, ]]
---[[         buffer_close_icon = "", ]]
+--[[         buffer_close_icon = "󰅖", ]]
 --[[         modified_icon = "●", ]]
 --[[         close_icon = "", ]]
 --[[         left_trunc_marker = "", ]]
@@ -180,7 +169,6 @@ return
 --[[         sort_by = "insert_after_current", ]]
 --[[     }, ]]
 --[[ }) ]]
-
 -- bufferline.setup {
 --       options = {
 --          numbers = "none", -- | "ordinal" | "buffer_id" | "both" | function({ ordinal, id, lower, raise }): string,
@@ -192,11 +180,11 @@ return
 --          -- and so changing this is NOT recommended, this is intended
 --          -- as an escape hatch for people who cannot bear it for whatever reason
 --          indicator_icon = "▎",
---          buffer_close_icon = "",
+--          buffer_close_icon = "󰅖",
 --          -- buffer_close_icon = '',
 --          modified_icon = "●",
 --          close_icon = "",
---          -- close_icon = '',
+--          -- close_icon = '󰅙',
 --          left_trunc_marker = "",
 --          right_trunc_marker = "",
 --         --- name_formatter can be used to change the buffer's label in the bufferline.

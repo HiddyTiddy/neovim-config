@@ -3,6 +3,8 @@ if not status_ok then
     return
 end
 
+require("treesitter-context").setup({ enable = true, max_lines = 1 })
+
 configs.setup({
     ensure_installed = "all",
     sync_install = false,
@@ -10,9 +12,12 @@ configs.setup({
     autopairs = {
         enable = true,
     },
+    autotags = {
+        enable = true
+    },
     highlight = {
         enable = true,
-        disable = { "org" }, -- Remove this to use TS highlighter for some of the highlights (Experimental)
+        disable = { "org" },                           -- Remove this to use TS highlighter for some of the highlights (Experimental)
         additional_vim_regex_highlighting = { "org" }, -- Required since TS highlighter doesn't support all syntax features (conceal)
     },
     indent = { enable = true, disable = { "yaml" } },

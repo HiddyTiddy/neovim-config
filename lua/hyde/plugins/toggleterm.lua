@@ -120,14 +120,14 @@ else
 	end
 end
 
-if exists("python3 --version") then
-	local python = Terminal:new({ cmd = "python3", hidden = true })
+if exists("python3.11 --version") then
+	local python = Terminal:new({ cmd = "python3.11", hidden = true })
 
 	function _PYTHON_TOGGLE()
 		python:toggle()
 	end
 else
 	function _PYTHON_TOGGLE()
-		print("python3 not installed")
+		print("python3.11 not installed")
 	end
 end
