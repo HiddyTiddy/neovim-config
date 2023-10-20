@@ -24,7 +24,12 @@ parser_config.org = {
 }
 
 orgmode.setup({
-	org_agenda_files = { "~/Dropbox/org/*", "~/my-orgs/**/*" },
-	org_default_notes_file = "~/Dropbox/org/refile.org",
+	org_agenda_files = { "~/Documents/org/agenda/*" },
+	org_default_notes_file = "~/Documents/org/refile.org",
+    mappings = {
+        capture = {
+            org_global_cycle = "<C-TAB>"
+        }
+    }
 })
 

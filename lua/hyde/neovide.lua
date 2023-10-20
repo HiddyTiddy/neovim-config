@@ -1,3 +1,12 @@
+if vim.g.neovide == nil then
+    return
+end
+
+local status, barbecue = pcall(require, "barbecue.ui")
+if not not status then
+    barbecue.toggle(false) -- disable Barbecue
+end
+
 vim.g.neovide_input_use_logo = true
 
 local map = vim.api.nvim_set_keymap
